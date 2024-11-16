@@ -38,7 +38,48 @@ pip install pandas pillow torch torchvision tqdm matplotlib
 python gan.py
 ```
 
+## Data Preprocessing
+
+- Images are loaded from directories and preprocessed with the following steps:
+  - **Grayscale conversion**
+  - **Resizing** to 128x128 pixels
+  - **Normalization** to the range of [-1, 1]
+
 ## Training
+### Architecture Summary
+
+1. **Generator (G)**:
+   - Takes a latent vector (100-dimensional) as input and generates a synthetic image.
+   - Uses **transposed convolution layers** to progressively upscale the image to a target size (128x128).
+   - Activation function: **ReLU** for hidden layers and **Tanh** for the output layer (to ensure image pixel values are in the range of [-1, 1]).
+   
+2. **Discriminator (D)**:
+   - Takes an image as input and classifies it as real or fake.
+   - Uses **convolutional layers** followed by **LeakyReLU** for activation to handle negative values effectively.
+   - Final output is a single probability indicating whether the image is real or fake, using the **Sigmoid** activation.
+
+### Hyperparameters
+
+- **Generator**:
+  - Latent vector size: **100** (input to the generator).
+  - Output image size: **128x128** (grayscale).
+  
+- **Discriminator**:
+  - Input image size: **128x128** (grayscale).
+  
+- **Learning Rate**:
+  - Optimizers: **Adam** with learning rate **0.0002**.
+  - Beta values for Adam optimizer: **(0.5, 0.999)** for better training stability.
+  
+- **Batch Size**: **64** (for both training and validation).
+  
+- **Epochs**: **50** (for training the GAN).
+  
+- **Loss Function**: **Binary Cross-Entropy Loss (BCELoss)** for both the generator and discriminator.
+
+- **Learning Rate Scheduler**:
+  - A **step scheduler** reduces the learning rate by a factor of 0.5 every **10 epochs**.
+
 Below shows the generator and discriminator loss during training for 50 epochs: 
 ![Alt Text](images/plot_final_50_sch.png)
 
